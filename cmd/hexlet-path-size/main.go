@@ -20,6 +20,11 @@ func main() {
 				Aliases: []string{"H"},
 				Usage:   "human-readable sizes (auto-select unit)",
 			},
+			&cli.BoolFlag{
+				Name:    "all",
+				Aliases: []string{"a"},
+				Usage:   "include hidden files and directories",
+			},
 		},
 		Action: func(_ context.Context, command *cli.Command) error {
 			path := command.Args().First()
@@ -28,7 +33,8 @@ func main() {
 			}
 
 			isHuman := command.Bool("human")
-			size, err := code.GetSize(path)
+			isAll := command.Bool("all")
+			size, err := code.GetSize(path, isAll)
 			if err != nil {
 				return cli.Exit(err.Error(), 1)
 			}
