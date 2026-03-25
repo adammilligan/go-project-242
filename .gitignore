@@ -1,0 +1,16 @@
+bin/
+
+# OS files
+.DS_Store
+
+# Editor / IDE
+.idea/
+.vscode/
+
+# Go build/test outputs
+*.out
+coverage.out
+
+# Cache / temp
+.cache/
+tmp/
