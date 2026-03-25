@@ -65,3 +65,11 @@ func TestGetPathSize_MissingPath(t *testing.T) {
 	_, err := code.GetSize(path)
 	require.Error(t, err)
 }
+
+func TestFormatSize(t *testing.T) {
+	require.Equal(t, "123B", code.FormatSize(123, false))
+	require.Equal(t, "25165824B", code.FormatSize(25165824, false))
+
+	require.Equal(t, "24.0MB", code.FormatSize(25165824, true))
+	require.Equal(t, "1.2MB", code.FormatSize(1234567, true))
+}
