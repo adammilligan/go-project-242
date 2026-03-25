@@ -38,9 +38,9 @@ func TestGetPathSize_File(t *testing.T) {
 	path := fixturePath(t, "file.txt")
 	expected := fileSize(t, path)
 
-	size, err := code.GetSize(path, false, false)
+	res, err := code.GetPathSize(path, false, false, false)
 	require.NoError(t, err)
-	require.Equal(t, expected, size)
+	require.Equal(t, code.FormatSize(expected, false), res)
 }
 
 func TestGetPathSize_DirectoryFirstLevel(t *testing.T) {
@@ -53,10 +53,10 @@ func TestGetPathSize_DirectoryFirstLevel(t *testing.T) {
 	expected := fileSize(t, a) + fileSize(t, b)
 	expectedNested := expected + fileSize(t, c)
 
-	size, err := code.GetSize(dir, false, false)
+	res, err := code.GetPathSize(dir, false, false, false)
 	require.NoError(t, err)
-	require.Equal(t, expected, size)
-	require.NotEqual(t, expectedNested, size)
+	require.Equal(t, code.FormatSize(expected, false), res)
+	require.NotEqual(t, code.FormatSize(expectedNested, false), res)
 }
 
 func TestGetPathSize_DirectoryFirstLevel_HiddenFiles(t *testing.T) {
@@ -69,14 +69,17 @@ func TestGetPathSize_DirectoryFirstLevel_HiddenFiles(t *testing.T) {
 	expected := fileSize(t, a) + fileSize(t, b)
 	expectedWithHidden := expected + fileSize(t, hidden)
 
-	sizeWithoutAll, err := code.GetSize(dir, false, false)
+	resWithoutAll, err := code.GetPathSize(dir, false, false, false)
 	require.NoError(t, err)
-	require.Equal(t, expected, sizeWithoutAll)
+	require.Equal(t, code.FormatSize(expected, false), resWithoutAll)
 
-	sizeWithAll, err := code.GetSize(dir, true, false)
+	resWithAll, err := code.GetPathSize(dir, false, false, true)
 	require.NoError(t, err)
-	require.Equal(t, expectedWithHidden, sizeWithAll)
-	require.GreaterOrEqual(t, sizeWithAll, sizeWithoutAll)
+	require.Equal(t, code.FormatSize(expectedWithHidden, false), resWithAll)
+
+	// human=false: сравнение по байтам строково эквивалентно числам.
+	require.NotEqual(t, resWithAll, "")
+	require.GreaterOrEqual(t, expectedWithHidden, expected)
 }
 
 func TestGetPathSize_DirectoryRecursive(t *testing.T) {
@@ -88,15 +91,15 @@ func TestGetPathSize_DirectoryRecursive(t *testing.T) {
 
 	expected := fileSize(t, a) + fileSize(t, b) + fileSize(t, c)
 
-	size, err := code.GetSize(dir, false, true)
+	res, err := code.GetPathSize(dir, true, false, false)
 	require.NoError(t, err)
-	require.Equal(t, expected, size)
+	require.Equal(t, code.FormatSize(expected, false), res)
 }
 
 func TestGetPathSize_MissingPath(t *testing.T) {
 	path := fixturePath(t, "missing.txt")
 
-	_, err := code.GetSize(path, false, false)
+	_, err := code.GetPathSize(path, false, false, false)
 	require.Error(t, err)
 }
 

@@ -7,6 +7,15 @@ import (
 	"strings"
 )
 
+func GetPathSize(path string, recursive, human, all bool) (string, error) {
+	size, err := GetSize(path, all, recursive)
+	if err != nil {
+		return "", err
+	}
+
+	return FormatSize(size, human), nil
+}
+
 func GetSize(path string, all bool, recursive bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
