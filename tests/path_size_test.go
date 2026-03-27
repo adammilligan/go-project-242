@@ -48,9 +48,10 @@ func TestGetPathSize_DirectoryFirstLevel(t *testing.T) {
 
 	a := fixturePath(t, "dir", "a.txt")
 	b := fixturePath(t, "dir", "b.txt")
+	svg := fixturePath(t, "dir", "hexlet.svg")
 	c := fixturePath(t, "dir", "sub", "c.txt")
 
-	expected := fileSize(t, a) + fileSize(t, b)
+	expected := fileSize(t, a) + fileSize(t, b) + fileSize(t, svg)
 	expectedNested := expected + fileSize(t, c)
 
 	res, err := code.GetPathSize(dir, false, false, false)
@@ -64,9 +65,10 @@ func TestGetPathSize_DirectoryFirstLevel_HiddenFiles(t *testing.T) {
 
 	a := fixturePath(t, "dir", "a.txt")
 	b := fixturePath(t, "dir", "b.txt")
+	svg := fixturePath(t, "dir", "hexlet.svg")
 	hidden := fixturePath(t, "dir", ".hidden.txt")
 
-	expected := fileSize(t, a) + fileSize(t, b)
+	expected := fileSize(t, a) + fileSize(t, b) + fileSize(t, svg)
 	expectedWithHidden := expected + fileSize(t, hidden)
 
 	resWithoutAll, err := code.GetPathSize(dir, false, false, false)
@@ -87,13 +89,28 @@ func TestGetPathSize_DirectoryRecursive(t *testing.T) {
 
 	a := fixturePath(t, "dir", "a.txt")
 	b := fixturePath(t, "dir", "b.txt")
+	svg := fixturePath(t, "dir", "hexlet.svg")
 	c := fixturePath(t, "dir", "sub", "c.txt")
 
-	expected := fileSize(t, a) + fileSize(t, b) + fileSize(t, c)
+	expected := fileSize(t, a) + fileSize(t, b) + fileSize(t, svg) + fileSize(t, c)
 
 	res, err := code.GetPathSize(dir, true, false, false)
 	require.NoError(t, err)
 	require.Equal(t, code.FormatSize(expected, false), res)
+}
+
+func TestGetPathSize_DirectoryFirstLevel_HumanReadable(t *testing.T) {
+	dir := fixturePath(t, "dir")
+
+	a := fixturePath(t, "dir", "a.txt")
+	b := fixturePath(t, "dir", "b.txt")
+	svg := fixturePath(t, "dir", "hexlet.svg")
+
+	expected := fileSize(t, a) + fileSize(t, b) + fileSize(t, svg)
+
+	res, err := code.GetPathSize(dir, false, true, false)
+	require.NoError(t, err)
+	require.Equal(t, code.FormatSize(expected, true), res)
 }
 
 func TestGetPathSize_MissingPath(t *testing.T) {
