@@ -45,14 +45,14 @@ func TestGetPathSize(t *testing.T) {
 	expectedWithHidden := expectedFirstLevel + fileSize(t, hidden)
 
 	tests := []struct {
-		name           string
-		path           string
-		recursive      bool
-		human          bool
-		all            bool
-		expected       string
-		expectedNot    string
-		wantErr        bool
+		name        string
+		path        string
+		recursive   bool
+		human       bool
+		all         bool
+		expected    string
+		expectedNot string
+		wantErr     bool
 	}{
 		{
 			name:     "file",
@@ -69,17 +69,17 @@ func TestGetPathSize(t *testing.T) {
 			expectedNot: FormatSize(expectedRecursive, false),
 		},
 		{
-			name:      "directory-first-level-hidden-all-false",
-			path:      fixturePath(t, "dir"),
-			all:       false,
-			expected:  FormatSize(expectedFirstLevel, false),
+			name:        "directory-first-level-hidden-all-false",
+			path:        fixturePath(t, "dir"),
+			all:         false,
+			expected:    FormatSize(expectedFirstLevel, false),
 			expectedNot: FormatSize(expectedWithHidden, false),
 		},
 		{
-			name:      "directory-first-level-hidden-all-true",
-			path:      fixturePath(t, "dir"),
-			all:       true,
-			expected:  FormatSize(expectedWithHidden, false),
+			name:     "directory-first-level-hidden-all-true",
+			path:     fixturePath(t, "dir"),
+			all:      true,
+			expected: FormatSize(expectedWithHidden, false),
 		},
 		{
 			name:      "directory-recursive",
@@ -94,11 +94,11 @@ func TestGetPathSize(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name:      "directory-first-level-human",
-			path:      fixturePath(t, "dir"),
-			all:       false,
-			human:     true,
-			expected:  FormatSize(expectedFirstLevel, true),
+			name:     "directory-first-level-human",
+			path:     fixturePath(t, "dir"),
+			all:      false,
+			human:    true,
+			expected: FormatSize(expectedFirstLevel, true),
 		},
 	}
 
@@ -122,10 +122,10 @@ func TestGetPathSize(t *testing.T) {
 
 func TestFormatSize(t *testing.T) {
 	tests := []struct {
-		name      string
-		size      int64
-		human     bool
-		expected  string
+		name     string
+		size     int64
+		human    bool
+		expected string
 	}{
 		{
 			name:     "bytes",
@@ -159,4 +159,3 @@ func TestFormatSize(t *testing.T) {
 		})
 	}
 }
-
