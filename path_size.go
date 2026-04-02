@@ -10,7 +10,7 @@ import (
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := GetSize(path, all, recursive)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("get path size for %q: %w", path, err)
 	}
 
 	return FormatSize(size, human), nil
@@ -19,7 +19,7 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 func GetSize(path string, all bool, recursive bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("stat %q: %w", path, err)
 	}
 
 	if !info.IsDir() {
@@ -28,7 +28,7 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("read dir %q: %w", path, err)
 	}
 
 	var total int64
@@ -39,7 +39,7 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 
 		entryInfo, err := entry.Info()
 		if err != nil {
-			return 0, err
+			return 0, fmt.Errorf("stat entry %q in %q: %w", entry.Name(), path, err)
 		}
 
 		if entryInfo.IsDir() {
@@ -50,7 +50,7 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 			subPath := filepath.Join(path, entry.Name())
 			subSize, err := GetSize(subPath, all, recursive)
 			if err != nil {
-				return 0, err
+				return 0, fmt.Errorf("get size for %q: %w", subPath, err)
 			}
 
 			total += subSize
