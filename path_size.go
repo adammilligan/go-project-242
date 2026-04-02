@@ -64,23 +64,27 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 }
 
 func FormatSize(size int64, isHuman bool) string {
-	if !isHuman {
-		return fmt.Sprintf("%dB", size)
-	}
-
 	const base int64 = 1024
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 
+	if !isHuman {
+		return fmt.Sprintf("%d%s", size, units[0])
+	}
+
 	if size < base {
-		return fmt.Sprintf("%dB", size)
+		return fmt.Sprintf("%d%s", size, units[0])
 	}
 
 	value := float64(size)
-	unitIndex := 0
-	for value >= float64(base) && unitIndex < len(units)-1 {
+
+	unit := units[0]
+	for _, u := range units[1:] {
+		if value < float64(base) {
+			break
+		}
 		value /= float64(base)
-		unitIndex++
+		unit = u
 	}
 
-	return fmt.Sprintf("%.1f%s", value, units[unitIndex])
+	return fmt.Sprintf("%.1f%s", value, unit)
 }
