@@ -7,13 +7,10 @@ import (
 	"strings"
 )
 
-// GetPathSize возвращает размер указанного пути в виде отформатированной строки.
+// GetPathSize returns the size of the given path as a formatted string.
 //
-// Если path указывает на файл, возвращается размер файла.
-// Если path указывает на директорию, размер директории рассчитывается по её содержимому.
-// Если recursive=true, учитываются размеры вложенных директорий.
-// Если all=false, элементы с именами, начинающимися с '.', пропускаются.
-// Если human=true, размер выводится в человекочитаемых двоичных единицах (основание 1024).
+// It supports optional recursion for directories, optional inclusion of hidden entries,
+// and optional human-readable output.
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := GetSize(path, all, recursive)
 	if err != nil {
@@ -23,12 +20,11 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	return FormatSize(size, human), nil
 }
 
-// GetSize вычисляет общий размер в байтах для указанного пути.
+// GetSize calculates the total size in bytes for the given path.
 //
-// Если path указывает на файл, возвращается размер файла.
-// Если path указывает на директорию, суммируются размеры файлов внутри неё.
-// Если recursive=true, учитываются размеры файлов во вложенных директориях.
-// Если all=false, элементы с именами, начинающимися с '.', пропускаются.
+// If path is a file, it returns the file size. If path is a directory, it sums the sizes of
+// the directory entries. When recursive is true, nested directories are included as well.
+// When all is false, entries with names starting with '.' are skipped.
 func GetSize(path string, all bool, recursive bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
@@ -76,11 +72,10 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 	return total, nil
 }
 
-// FormatSize преобразует размер в байтах в строковое представление.
+// FormatSize formats a size in bytes.
 //
-// Если isHuman=false, выводится размер в байтах (например, "123B").
-// Если isHuman=true, выводится размер в человекочитаемых двоичных единицах (основание 1024),
-// например "1.2MB".
+// When isHuman is false, it returns bytes (e.g. "123B").
+// When isHuman is true, it uses base-1024 units (e.g. "1.2MB").
 func FormatSize(size int64, isHuman bool) string {
 	const base int64 = 1024
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
