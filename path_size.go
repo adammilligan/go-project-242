@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+// GetPathSize возвращает размер указанного пути в виде отформатированной строки.
+//
+// Если path указывает на файл, возвращается размер файла.
+// Если path указывает на директорию, размер директории рассчитывается по её содержимому.
+// Если recursive=true, учитываются размеры вложенных директорий.
+// Если all=false, элементы с именами, начинающимися с '.', пропускаются.
+// Если human=true, размер выводится в человекочитаемых двоичных единицах (основание 1024).
 func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	size, err := GetSize(path, all, recursive)
 	if err != nil {
@@ -16,6 +23,12 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 	return FormatSize(size, human), nil
 }
 
+// GetSize вычисляет общий размер в байтах для указанного пути.
+//
+// Если path указывает на файл, возвращается размер файла.
+// Если path указывает на директорию, суммируются размеры файлов внутри неё.
+// Если recursive=true, учитываются размеры файлов во вложенных директориях.
+// Если all=false, элементы с именами, начинающимися с '.', пропускаются.
 func GetSize(path string, all bool, recursive bool) (int64, error) {
 	info, err := os.Lstat(path)
 	if err != nil {
@@ -63,6 +76,11 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 	return total, nil
 }
 
+// FormatSize преобразует размер в байтах в строковое представление.
+//
+// Если isHuman=false, выводится размер в байтах (например, "123B").
+// Если isHuman=true, выводится размер в человекочитаемых двоичных единицах (основание 1024),
+// например "1.2MB".
 func FormatSize(size int64, isHuman bool) string {
 	const base int64 = 1024
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
