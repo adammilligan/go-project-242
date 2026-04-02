@@ -1,19 +1,14 @@
-version: 2
+version: "2"
 
 run:
   timeout: 5m
   tests: true
-  skip-dirs:
-    - "bin"
-    - "tmp"
-    - "testdata"
 
 formatters:
   enable:
     - gofmt
 
 linters:
-  disable-all: true
   enable:
     - govet
     - errcheck
