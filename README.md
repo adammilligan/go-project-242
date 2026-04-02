@@ -11,7 +11,7 @@
 
 Пример работы утилиты:
 
-![Демонстрация работы hexlet-path-size](./hexlet-path-size.gif)
+![Демонстрация работы hexlet-path-size](./assets/hexlet-path-size.gif)
 
 ## Как запустить
 Собрать бинарник:
