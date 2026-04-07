@@ -41,6 +41,7 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 	}
 
 	var total int64
+
 	for _, entry := range entries {
 		if !all && strings.HasPrefix(entry.Name(), ".") {
 			continue
@@ -57,12 +58,14 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 			}
 
 			subPath := filepath.Join(path, entry.Name())
+
 			subSize, err := GetSize(subPath, all, recursive)
 			if err != nil {
 				return 0, fmt.Errorf("get size for %q: %w", subPath, err)
 			}
 
 			total += subSize
+
 			continue
 		}
 
@@ -78,6 +81,7 @@ func GetSize(path string, all bool, recursive bool) (int64, error) {
 // When isHuman is true, it uses base-1024 units (e.g. "1.2MB").
 func FormatSize(size int64, isHuman bool) string {
 	const base int64 = 1024
+
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 
 	if !isHuman {
@@ -91,10 +95,12 @@ func FormatSize(size int64, isHuman bool) string {
 	value := float64(size)
 
 	unit := units[0]
+
 	for _, u := range units[1:] {
 		if value < float64(base) {
 			break
 		}
+
 		value /= float64(base)
 		unit = u
 	}

@@ -40,12 +40,14 @@ func main() {
 			isHuman := command.Bool("human")
 			isAll := command.Bool("all")
 			isRecursive := command.Bool("recursive")
+
 			formatted, err := code.GetPathSize(path, isRecursive, isHuman, isAll)
 			if err != nil {
 				return cli.Exit(err.Error(), 1)
 			}
 
 			fmt.Printf("%s\t%s\n", formatted, path)
+
 			return nil
 		},
 	}

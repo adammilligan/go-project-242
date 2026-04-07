@@ -19,6 +19,7 @@ func fixturePath(t *testing.T, parts ...string) string {
 
 	repoRoot := filepath.Dir(thisFile)
 	allParts := append([]string{repoRoot, "testdata"}, parts...)
+
 	return filepath.Join(allParts...)
 }
 
@@ -110,6 +111,7 @@ func TestGetPathSize(t *testing.T) {
 
 			require.NoError(t, err)
 			require.Equal(t, tc.expected, res)
+
 			if tc.expectedNot != "" {
 				require.NotEqual(t, tc.expectedNot, res)
 			}
