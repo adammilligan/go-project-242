@@ -44,8 +44,7 @@ func TestGetPathSize(t *testing.T) {
 	expectedRecursive := expectedFirstLevel + fileSize(t, c)
 	expectedWithHidden := expectedFirstLevel + fileSize(t, hidden)
 
-	tests := []struct {
-		name        string
+	tests := map[string]struct {
 		path        string
 		recursive   bool
 		human       bool
@@ -54,13 +53,16 @@ func TestGetPathSize(t *testing.T) {
 		expectedNot string
 		wantErr     bool
 	}{
-		{
-			name:     "file",
+		"file: returns file size (flags do not apply)": {
 			path:     fixturePath(t, "file.txt"),
 			expected: FormatSize(fileSize(t, fixturePath(t, "file.txt")), false),
 		},
-		{
-			name:        "directory-first-level",
+		"file: hidden file is still counted when all=false": {
+			path:     fixturePath(t, "dir", ".hidden.txt"),
+			all:      false,
+			expected: FormatSize(fileSize(t, fixturePath(t, "dir", ".hidden.txt")), false),
+		},
+		"dir: first level only when recursive=false": {
 			path:        fixturePath(t, "dir"),
 			recursive:   false,
 			human:       false,
@@ -68,33 +70,28 @@ func TestGetPathSize(t *testing.T) {
 			expected:    FormatSize(expectedFirstLevel, false),
 			expectedNot: FormatSize(expectedRecursive, false),
 		},
-		{
-			name:        "directory-first-level-hidden-all-false",
+		"dir: hidden entries are excluded when all=false": {
 			path:        fixturePath(t, "dir"),
 			all:         false,
 			expected:    FormatSize(expectedFirstLevel, false),
 			expectedNot: FormatSize(expectedWithHidden, false),
 		},
-		{
-			name:     "directory-first-level-hidden-all-true",
+		"dir: hidden entries are included when all=true": {
 			path:     fixturePath(t, "dir"),
 			all:      true,
 			expected: FormatSize(expectedWithHidden, false),
 		},
-		{
-			name:      "directory-recursive",
+		"dir: includes nested directories when recursive=true": {
 			path:      fixturePath(t, "dir"),
 			recursive: true,
 			all:       false,
 			expected:  FormatSize(expectedRecursive, false),
 		},
-		{
-			name:    "missing-path",
+		"missing path: returns error": {
 			path:    fixturePath(t, "missing.txt"),
 			wantErr: true,
 		},
-		{
-			name:     "directory-first-level-human",
+		"dir: human=true formats the result": {
 			path:     fixturePath(t, "dir"),
 			all:      false,
 			human:    true,
@@ -102,8 +99,8 @@ func TestGetPathSize(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
+	for name, tc := range tests {
+		t.Run(name, func(t *testing.T) {
 			res, err := GetPathSize(tc.path, tc.recursive, tc.human, tc.all)
 
 			if tc.wantErr {
