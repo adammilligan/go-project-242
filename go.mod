@@ -2,7 +2,10 @@ module code
 
 go 1.25
 
-require github.com/urfave/cli/v3 v3.7.0
+require (
+	github.com/adammilligan/gocovreport v0.0.0-20260420084811-3ad22bb03482
+	github.com/urfave/cli/v3 v3.7.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
