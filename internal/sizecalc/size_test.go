@@ -57,9 +57,9 @@ func TestGetSize(t *testing.T) {
 			expected: fileSize(t, fixturePath(t, "file.txt")),
 		},
 		"file: hidden file returns error when all=false": {
-			path:     fixturePath(t, "dir", ".hidden.txt"),
-			all:      false,
-			wantErr:  true,
+			path:    fixturePath(t, "dir", ".hidden.txt"),
+			all:     false,
+			wantErr: true,
 		},
 		"file: hidden file returns size when all=true": {
 			path:     fixturePath(t, "dir", ".hidden.txt"),

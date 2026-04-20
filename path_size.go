@@ -3,7 +3,7 @@ package code
 import (
 	"fmt"
 
-	"code/internal/presentation/format"
+	"code/internal/format"
 	"code/internal/sizecalc"
 )
 
