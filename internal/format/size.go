@@ -7,28 +7,29 @@ import "fmt"
 // When isHuman is false, it returns bytes (e.g. "123B").
 // When isHuman is true, it uses base-1024 units (e.g. "1.2MB").
 func FormatSize(size int64, isHuman bool) string {
+	if size < 0 {
+		panic(fmt.Sprintf("size must be non-negative, got %d", size))
+	}
+
 	const base int64 = 1024
 
 	units := []string{"B", "KB", "MB", "GB", "TB", "PB", "EB"}
 
-	if !isHuman {
-		return fmt.Sprintf("%d%s", size, units[0])
-	}
-
-	if size < base {
+	if !isHuman || size < base {
 		return fmt.Sprintf("%d%s", size, units[0])
 	}
 
 	value := float64(size)
+	baseFloat := float64(base)
 
 	unit := units[0]
 
 	for _, u := range units[1:] {
-		if value < float64(base) {
+		if value < baseFloat {
 			break
 		}
 
-		value /= float64(base)
+		value /= baseFloat
 		unit = u
 	}
 

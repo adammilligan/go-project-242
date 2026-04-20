@@ -7,6 +7,12 @@ import (
 )
 
 func TestFormatSize(t *testing.T) {
+	t.Run("panics on negative size", func(t *testing.T) {
+		require.Panics(t, func() {
+			FormatSize(-1, false)
+		})
+	})
+
 	tests := []struct {
 		name     string
 		size     int64
