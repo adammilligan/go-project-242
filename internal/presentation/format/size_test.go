@@ -14,25 +14,25 @@ func TestFormatSize(t *testing.T) {
 		expected string
 	}{
 		{
-			name:     "bytes",
+			name:     "human=false returns bytes without conversion",
 			size:     123,
 			human:    false,
 			expected: "123B",
 		},
 		{
-			name:     "bytes-big",
+			name:     "human=false keeps large sizes in bytes",
 			size:     25165824,
 			human:    false,
 			expected: "25165824B",
 		},
 		{
-			name:     "human-mb",
+			name:     "human=true converts bytes to MB",
 			size:     25165824,
 			human:    true,
 			expected: "24.0MB",
 		},
 		{
-			name:     "human-mb-smaller",
+			name:     "human=true converts bytes to MB with rounding",
 			size:     1234567,
 			human:    true,
 			expected: "1.2MB",

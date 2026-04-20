@@ -7,12 +7,20 @@ import (
 	"strings"
 )
 
+func isHiddenPath(path string) bool {
+	return strings.HasPrefix(filepath.Base(path), ".")
+}
+
 // GetSize calculates the total size in bytes for the given path.
 //
 // If path is a file, it returns the file size. If path is a directory, it sums the sizes of
 // the directory entries. When recursive is true, nested directories are included as well.
 // When all is false, entries with names starting with '.' are skipped.
 func GetSize(path string, all bool, recursive bool) (int64, error) {
+	if !all && isHiddenPath(path) {
+		return 0, fmt.Errorf("hidden path %q is excluded when all=false", path)
+	}
+
 	info, err := os.Lstat(path)
 	if err != nil {
 		return 0, fmt.Errorf("stat %q: %w", path, err)

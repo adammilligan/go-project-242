@@ -56,9 +56,14 @@ func TestGetSize(t *testing.T) {
 			path:     fixturePath(t, "file.txt"),
 			expected: fileSize(t, fixturePath(t, "file.txt")),
 		},
-		"file: hidden file is still counted when all=false": {
+		"file: hidden file returns error when all=false": {
 			path:     fixturePath(t, "dir", ".hidden.txt"),
 			all:      false,
+			wantErr:  true,
+		},
+		"file: hidden file returns size when all=true": {
+			path:     fixturePath(t, "dir", ".hidden.txt"),
+			all:      true,
 			expected: fileSize(t, fixturePath(t, "dir", ".hidden.txt")),
 		},
 		"dir: first level only when recursive=false": {
