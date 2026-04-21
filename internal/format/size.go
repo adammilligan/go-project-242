@@ -25,16 +25,16 @@ func FormatSize(size int64, isHuman bool) (string, error) {
 	}
 
 	value := float64(size)
-	baseFloat := float64(base)
+	unitBase := float64(base)
 
 	unit := units[0]
 
 	for _, u := range units[1:] {
-		if value < baseFloat {
+		if value < unitBase {
 			break
 		}
 
-		value /= baseFloat
+		value /= unitBase
 		unit = u
 	}
 
