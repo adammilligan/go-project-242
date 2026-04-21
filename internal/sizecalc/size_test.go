@@ -45,55 +45,15 @@ func TestGetSize(t *testing.T) {
 	expectedRecursive := expectedFirstLevel + fileSize(t, c)
 	expectedWithHidden := expectedFirstLevel + fileSize(t, hidden)
 
-	tests := map[string]struct {
+	type testCase struct {
 		path      string
 		all       bool
 		recursive bool
 		expected  int64
 		wantErr   bool
-	}{
-		"file: returns file size": {
-			path:     fixturePath(t, "file.txt"),
-			expected: fileSize(t, fixturePath(t, "file.txt")),
-		},
-		"file: hidden file returns error when all=false": {
-			path:    fixturePath(t, "dir", ".hidden.txt"),
-			all:     false,
-			wantErr: true,
-		},
-		"file: hidden file returns size when all=true": {
-			path:     fixturePath(t, "dir", ".hidden.txt"),
-			all:      true,
-			expected: fileSize(t, fixturePath(t, "dir", ".hidden.txt")),
-		},
-		"dir: first level only when recursive=false": {
-			path:     fixturePath(t, "dir"),
-			all:      false,
-			expected: expectedFirstLevel,
-		},
-		"dir: includes nested directories when recursive=true": {
-			path:      fixturePath(t, "dir"),
-			all:       false,
-			recursive: true,
-			expected:  expectedRecursive,
-		},
-		"dir: hidden entries are excluded when all=false": {
-			path:     fixturePath(t, "dir"),
-			all:      false,
-			expected: expectedFirstLevel,
-		},
-		"dir: hidden entries are included when all=true": {
-			path:     fixturePath(t, "dir"),
-			all:      true,
-			expected: expectedWithHidden,
-		},
-		"missing path: returns error": {
-			path:    fixturePath(t, "missing.txt"),
-			wantErr: true,
-		},
 	}
 
-	for name, tc := range tests {
+	run := func(t *testing.T, name string, tc testCase) {
 		t.Run(name, func(t *testing.T) {
 			got, err := GetSize(tc.path, tc.all, tc.recursive)
 
@@ -106,4 +66,61 @@ func TestGetSize(t *testing.T) {
 			require.Equal(t, tc.expected, got)
 		})
 	}
+
+	t.Run("success scenarios", func(t *testing.T) {
+		tests := map[string]testCase{
+			"file: returns file size": {
+				path:     fixturePath(t, "file.txt"),
+				expected: fileSize(t, fixturePath(t, "file.txt")),
+			},
+			"file: hidden file returns size when all=true": {
+				path:     fixturePath(t, "dir", ".hidden.txt"),
+				all:      true,
+				expected: fileSize(t, fixturePath(t, "dir", ".hidden.txt")),
+			},
+			"dir: first level only when recursive=false": {
+				path:     fixturePath(t, "dir"),
+				all:      false,
+				expected: expectedFirstLevel,
+			},
+			"dir: includes nested directories when recursive=true": {
+				path:      fixturePath(t, "dir"),
+				all:       false,
+				recursive: true,
+				expected:  expectedRecursive,
+			},
+			"dir: hidden entries are excluded when all=false": {
+				path:     fixturePath(t, "dir"),
+				all:      false,
+				expected: expectedFirstLevel,
+			},
+			"dir: hidden entries are included when all=true": {
+				path:     fixturePath(t, "dir"),
+				all:      true,
+				expected: expectedWithHidden,
+			},
+		}
+
+		for name, tc := range tests {
+			run(t, name, tc)
+		}
+	})
+
+	t.Run("error scenarios", func(t *testing.T) {
+		tests := map[string]testCase{
+			"file: hidden file returns error when all=false": {
+				path:    fixturePath(t, "dir", ".hidden.txt"),
+				all:     false,
+				wantErr: true,
+			},
+			"missing path: returns error": {
+				path:    fixturePath(t, "missing.txt"),
+				wantErr: true,
+			},
+		}
+
+		for name, tc := range tests {
+			run(t, name, tc)
+		}
+	})
 }

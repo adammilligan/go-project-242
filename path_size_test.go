@@ -36,34 +36,16 @@ func fileSize(t *testing.T, path string) int64 {
 }
 
 func TestGetPathSize(t *testing.T) {
-	tests := map[string]struct {
+	type testCase struct {
 		path      string
 		recursive bool
 		human     bool
 		all       bool
 		expected  string
 		wantErr   bool
-	}{
-		"file: returns file size": {
-			path:     fixturePath(t, "file.txt"),
-			expected: fmt.Sprintf("%dB", fileSize(t, fixturePath(t, "file.txt"))),
-		},
-		"dir: first level size when recursive=false and all=false": {
-			path: fixturePath(t, "dir"),
-			expected: fmt.Sprintf(
-				"%dB",
-				fileSize(t, fixturePath(t, "dir", "a.txt"))+
-					fileSize(t, fixturePath(t, "dir", "b.txt"))+
-					fileSize(t, fixturePath(t, "dir", "hexlet.svg")),
-			),
-		},
-		"missing path: returns error": {
-			path:    fixturePath(t, "missing.txt"),
-			wantErr: true,
-		},
 	}
 
-	for name, tc := range tests {
+	run := func(t *testing.T, name string, tc testCase) {
 		t.Run(name, func(t *testing.T) {
 			res, err := GetPathSize(tc.path, tc.recursive, tc.human, tc.all)
 
@@ -76,4 +58,39 @@ func TestGetPathSize(t *testing.T) {
 			require.Equal(t, tc.expected, res)
 		})
 	}
+
+	t.Run("success scenarios", func(t *testing.T) {
+		tests := map[string]testCase{
+			"file: returns file size": {
+				path:     fixturePath(t, "file.txt"),
+				expected: fmt.Sprintf("%dB", fileSize(t, fixturePath(t, "file.txt"))),
+			},
+			"dir: first level size when recursive=false and all=false": {
+				path: fixturePath(t, "dir"),
+				expected: fmt.Sprintf(
+					"%dB",
+					fileSize(t, fixturePath(t, "dir", "a.txt"))+
+						fileSize(t, fixturePath(t, "dir", "b.txt"))+
+						fileSize(t, fixturePath(t, "dir", "hexlet.svg")),
+				),
+			},
+		}
+
+		for name, tc := range tests {
+			run(t, name, tc)
+		}
+	})
+
+	t.Run("error scenarios", func(t *testing.T) {
+		tests := map[string]testCase{
+			"missing path: returns error": {
+				path:    fixturePath(t, "missing.txt"),
+				wantErr: true,
+			},
+		}
+
+		for name, tc := range tests {
+			run(t, name, tc)
+		}
+	})
 }
