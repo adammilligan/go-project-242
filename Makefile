@@ -1,4 +1,7 @@
-.PHONY: build test install-tools test-cover lint lint-fix
+.PHONY: build test install-tools test-cover install-lint lint lint-fix
+
+GOLANGCI_LINT_VERSION := v2.9.0
+GOLANGCI_LINT_BIN := ./bin/golangci-lint
 
 build:
 	go build -o bin/hexlet-path-size ./cmd/hexlet-path-size
@@ -12,8 +15,12 @@ install-tools:
 test-cover: install-tools
 	gocovreport run --color=always ./...
 
-lint:
-	golangci-lint run
+install-lint:
+	curl -sSfL https://golangci-lint.run/install.sh | \
+		sh -s -- -b ./bin $(GOLANGCI_LINT_VERSION)
+
+lint: install-lint
+	$(GOLANGCI_LINT_BIN) run
 
 lint-fix:
-	golangci-lint run --fix
+	$(GOLANGCI_LINT_BIN) run --fix
