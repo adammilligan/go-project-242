@@ -8,10 +8,9 @@ import (
 
 func TestFormatSize(t *testing.T) {
 	t.Run("invariant scenarios", func(t *testing.T) {
-		t.Run("panics on negative size", func(t *testing.T) {
-			require.Panics(t, func() {
-				FormatSize(-1, false)
-			})
+		t.Run("returns error on negative size", func(t *testing.T) {
+			_, err := FormatSize(-1, false)
+			require.ErrorIs(t, err, ErrNegativeSize)
 		})
 	})
 
@@ -24,7 +23,9 @@ func TestFormatSize(t *testing.T) {
 
 	run := func(t *testing.T, tc testCase) {
 		t.Run(tc.name, func(t *testing.T) {
-			require.Equal(t, tc.expected, FormatSize(tc.size, tc.human))
+			got, err := FormatSize(tc.size, tc.human)
+			require.NoError(t, err)
+			require.Equal(t, tc.expected, got)
 		})
 	}
 

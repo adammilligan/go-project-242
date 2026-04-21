@@ -17,5 +17,10 @@ func GetPathSize(path string, recursive, human, all bool) (string, error) {
 		return "", fmt.Errorf("get path size for %q: %w", path, err)
 	}
 
-	return format.FormatSize(size, human), nil
+	res, err := format.FormatSize(size, human)
+	if err != nil {
+		return "", fmt.Errorf("format size for %q: %w", path, err)
+	}
+
+	return res, nil
 }
