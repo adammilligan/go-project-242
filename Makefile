@@ -1,4 +1,4 @@
-.PHONY: build test install-tools test-cover install-lint lint lint-fix
+.PHONY: build test test-cover install-lint lint lint-fix
 
 GOLANGCI_LINT_VERSION := v2.9.0
 GOLANGCI_LINT_BIN := ./bin/golangci-lint
@@ -9,11 +9,8 @@ build:
 test:
 	go test -v ./...
 
-install-tools:
-	go install github.com/adammilligan/gocovreport/cmd/gocovreport@v0.0.0-20260420084811-3ad22bb03482
-
-test-cover: install-tools
-	gocovreport run --color=always ./...
+test-cover:
+	go tool gocovreport run --color=always ./...
 
 install-lint:
 	curl -sSfL https://golangci-lint.run/install.sh | \
