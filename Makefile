@@ -16,7 +16,7 @@ install-lint:
 	curl -sSfL https://golangci-lint.run/install.sh | \
 		sh -s -- -b ./bin $(GOLANGCI_LINT_VERSION)
 
-lint: install-lint
+lint:
 	$(GOLANGCI_LINT_BIN) run
 
 lint-fix:

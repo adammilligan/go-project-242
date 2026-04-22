@@ -1,4 +1,5 @@
 bin/
+vendor/
 
 # OS files
 .DS_Store
